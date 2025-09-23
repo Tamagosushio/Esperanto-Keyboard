@@ -22,8 +22,6 @@ Win32/
 *.rsp
 *.sbr
 *.tlog
-*.exe
-*.dll
 *.lib
 *.sbr
 *.map
