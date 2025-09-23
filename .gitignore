@@ -1,0 +1,38 @@
+# Visual Studio C++ projects
+
+# User-specific files
+*.suo
+*.user
+*.user.filters
+*.vcxproj.user
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+Win32/
+*.ilk
+*.meta
+*.obj
+*.obj.enc
+*.pch
+*.pdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlog
+*.exe
+*.dll
+*.lib
+*.sbr
+*.map
+
+# Visual Studio cache files
+.vs/
+*.vcxproj.db
+*.*.opendb
+
+# Other
+vcpkg/
+vcpkg_installed/

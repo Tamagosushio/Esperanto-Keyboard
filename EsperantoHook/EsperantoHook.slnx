@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="EsperantoHook.vcxproj" Id="dd704df2-62d9-4efb-a539-7c4d67e521ad" />
+</Solution>

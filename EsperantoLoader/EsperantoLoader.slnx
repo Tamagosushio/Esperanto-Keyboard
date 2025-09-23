@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="EsperantoLoader.vcxproj" Id="7d8c3860-a72e-410c-b537-01e6c41d90fd" />
+</Solution>
