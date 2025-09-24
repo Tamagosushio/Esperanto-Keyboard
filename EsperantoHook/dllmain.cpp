@@ -12,7 +12,10 @@ static HMODULE g_hModule = NULL;
 static std::optional<DWORD> g_prevKeyCode = 0;
 // 1文字目はShiftキーが押されているか
 static bool g_isFirstKeyShifted = false;
+// 変換が有効化か
+static bool g_isConversionEnabled = true;
 
+constexpr DWORD SWITCH_ENABLE_VIRTUAL_KEYCODE = 0x30; // '0'キー
 
 // 変換ルール
 struct ConversionRule {
@@ -43,12 +46,31 @@ bool UnsetHook(HHOOK hHook) {
 	return false;
 }
 
+void EnableConversion(bool bEnable) {
+	g_isConversionEnabled = bEnable;
+}
+
+bool IsConversionEnabled(void) {
+	return g_isConversionEnabled;
+}
+
 // キーボードフックプロシージャ
 LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
 	// キー入力イベントが発生し、それがキーが押されたイベントである場合
 	if (nCode == HC_ACTION and wParam == WM_KEYDOWN) {
 		KBDLLHOOKSTRUCT* pkbhs = (KBDLLHOOKSTRUCT*)lParam;
 		DWORD currentKeyCode = pkbhs->vkCode;
+		// Ctrl + Shift + '0' で変換の有効/無効を切り替え
+		if (currentKeyCode == SWITCH_ENABLE_VIRTUAL_KEYCODE and (GetAsyncKeyState(VK_CONTROL) & 0x8000) and (GetAsyncKeyState(VK_SHIFT) & 0x8000)) {
+			g_isConversionEnabled = !g_isConversionEnabled; // 状態を反転
+			return 1; // ホットキーの入力をOSに伝えない
+		}
+		// 変換が無効化されている場合は状態をリセットして何もしない
+		if (not g_isConversionEnabled) {
+			g_prevKeyCode.reset();
+			g_isFirstKeyShifted = false;
+			return CallNextHookEx(NULL, nCode, wParam, lParam);
+		}
 		if (g_prevKeyCode.has_value()) {
 			// 直前に入力されたキーコードと現在のキーコードを比較して変換ルールを適用
 			for (const auto& rule : g_conversionRules) {

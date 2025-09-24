@@ -8,6 +8,8 @@
 
 // タスクトレイのメッセージ
 #define WM_APP_NOTIFY (WM_APP + 1)
+// メニュー項目のID
+#define IDM_TOGGLE_CONVERSION 1001
 // アプリケーションのインスタンスハンドル
 HINSTANCE g_hInst;
 // キーボードフックのハンドル
@@ -48,7 +50,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		return 0;
 	}
 	if (not SetHook(&g_hHook)) {
-		MessageBox(NULL, L"フックの設定に失敗しました。", L"エラー", MB_ICONERROR);
+		MessageBox(NULL, L"Malsukcesis hoka agordo.", L"Eraro", MB_ICONERROR);
 		DestroyWindow(hWnd);
 		return FALSE;
 	}
@@ -77,7 +79,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) 
 	{
 		int wmId = LOWORD(wParam);
 		// 終了メニュー
-		if (wmId == 1001) {
+		switch (wmId) {
+		case IDM_TOGGLE_CONVERSION:
+			EnableConversion(!IsConversionEnabled());
+			break;
+		case IDM_EXIT:
 			PostMessage(hWnd, WM_CLOSE, 0, 0);
 		}
 	}
@@ -104,7 +110,7 @@ void AddTaskTrayIcon(HWND hWnd) {
 	nid.hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON2));
 	wcscpy_s(nid.szTip, L"Esperanto Input");
 	if (not Shell_NotifyIconW(NIM_ADD, &nid)) {
-		MessageBox(hWnd, L"タスクトレイアイコンの追加に失敗しました。", L"エラー", MB_OK | MB_ICONERROR);
+		MessageBox(hWnd, L"Malsukcesis aldono de taskopleta ikono.", L"Eraro", MB_OK | MB_ICONERROR);
 	}
 }
 
@@ -120,7 +126,11 @@ void ShowContextMenu(HWND hWnd) {
 	POINT pt;
 	GetCursorPos(&pt);
 	HMENU hMenu = CreatePopupMenu();
-	InsertMenuW(hMenu, 0, MF_BYPOSITION | MF_STRING, 1001, L"終了");
+	bool isEnabled = IsConversionEnabled();
+	UINT flags = MF_BYPOSITION | MF_STRING | (isEnabled ? MF_CHECKED : MF_UNCHECKED);
+	InsertMenuW(hMenu, 0, flags, IDM_TOGGLE_CONVERSION, L"Validigas konverto (Ctrl+Shift+0)");
+	InsertMenuW(hMenu, 1, MF_BYPOSITION | MF_SEPARATOR, 0, NULL);
+	InsertMenuW(hMenu, 2, MF_BYPOSITION | MF_STRING, IDM_EXIT, L"Eliras");
 	SetForegroundWindow(hWnd);
 	TrackPopupMenu(hMenu, TPM_BOTTOMALIGN | TPM_LEFTALIGN, pt.x, pt.y, 0, hWnd, NULL);
 	PostMessage(hWnd, WM_NULL, 0, 0);

@@ -17,3 +17,7 @@ extern "C" ESPERANTOHOOK_API bool UnsetHook(HHOOK hHook);
 
 // フックプロシージャ
 extern "C" LRESULT CALLBACK LowLevelKeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
+
+// 変換の有効切り替え
+extern "C" ESPERANTOHOOK_API void EnableConversion(bool bEnable);
+extern "C" ESPERANTOHOOK_API bool IsConversionEnabled(void);
