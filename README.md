@@ -1,4 +1,6 @@
 # Esperanto-Keyboard
+![Esperanto-Keyboard](./sample.gif)
+
 ## Overview
 エスペラント語をキーボードで打てるようにします。
 ## Usage
